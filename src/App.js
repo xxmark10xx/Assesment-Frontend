@@ -13,21 +13,20 @@ function App() {
 
   const [ search, setSearch ] = useState("")
 
-
   const getStudentData = () => {
     axios.get(apiData)
     .then(response => {
-      const studentArr = response.data.students 
+      const studentArr = response.data
       // mutating saved api data 
-        studentArr.forEach(student => {
+        studentArr.students.forEach(student => {
           student.fullName = `${student.firstName} ${student.lastName}`
         })
-        setStudentData(studentArr)
+        setStudentData(studentArr.students)
       })
       .catch(err => console.error(err))
   }
-
-  console.log(studentData)
+  
+  
 
   useEffect(getStudentData, [])
 
@@ -36,29 +35,37 @@ function App() {
       setSearch(e.target.value)
   }
 
-  const getFilteredStudentsFirst = () => {
+  const getFilteredStudent = () => {
     let searchTerm = search.toLowerCase()
     return studentData.filter(student => {
         let lowerCaseFirstName = student.fullName.toLowerCase()
         return lowerCaseFirstName.includes(searchTerm)
     })
   }
- 
-  const filteredFirstName = getFilteredStudentsFirst()
+
+  const filteredStudent = getFilteredStudent()
+
+  const studentList = filteredStudent.map((student, index) => {
+    return <DisplayStudents student={student}  key={`student-info-${index}`}/>
+  })
   
   return (
-    <div className="App">
-      <div>
-        <DisplayStudents students={filteredFirstName} />
-      </div>
-      <div className="info-container">
-        <input
-          placeholder="Search by name"
-          className="student-search"
-          type="text"
-          value={search}
-          onChange={handleChange}
-        />
+    <div className="most-outter-wrapper">
+      <div className="wrapper-holder">
+        <div className="search-wrapper">
+          <label htmlFor="student-search"></label>
+          <input
+            placeholder="Search by name"
+            id="student-search"
+            type="text"
+            value={search}
+            onChange={handleChange}
+          />
+          {/* css for the student info card */}
+        <div className="student-card-wrapper"> 
+          {studentList}
+        </div>
+        </div>
       </div>
     </div>
   );

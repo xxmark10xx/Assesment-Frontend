@@ -1,8 +1,8 @@
 export default function AverageScore ({studentScores}) {
     let total = 0;
 
-    studentScores.map((grades, i) => {
-        return total += Number(grades)
+    studentScores.map((grades, index) => {
+        return <p key={`{grade-$index}`}>{total += Number(grades)}</p>
     })
     
     let avg = total/studentScores.length
@@ -10,7 +10,9 @@ export default function AverageScore ({studentScores}) {
     
     return (
         <div className="info-container">
-            <p className="studentInfo">Average: {avg}</p>
+            <div className="student-info">
+                <p className="content">Average: {avg}%</p>
+            </div>
         </div>
     )
 }
