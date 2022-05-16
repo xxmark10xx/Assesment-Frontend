@@ -13,6 +13,11 @@ function App() {
 
   const [ search, setSearch ] = useState("")
 
+  const [ tag, setTag ] = useState([])
+
+  const [ tagSearch, setTagSearch ] = useState("")
+
+  // fetching data from api
   const getStudentData = () => {
     axios.get(apiData)
     .then(response => {
@@ -20,19 +25,27 @@ function App() {
       // mutating saved api data 
         studentArr.students.forEach(student => {
           student.fullName = `${student.firstName} ${student.lastName}`
+          student.tag = []
         })
         setStudentData(studentArr.students)
       })
       .catch(err => console.error(err))
   }
-  
-  
 
   useEffect(getStudentData, [])
+
+  const addTag = (str, index) => {
+    const studentTag = [...studentData]
+    studentTag[index].tag.push(str)
+  }
 
 
   const handleChange = (e) => {
       setSearch(e.target.value)
+  }
+
+  const handleTagChange = (e) => {
+    setTagSearch(e.target.value)
   }
 
   const getFilteredStudent = () => {
@@ -43,10 +56,36 @@ function App() {
     })
   }
 
-  const filteredStudent = getFilteredStudent()
+  const getFilteredStudentTag = () => {
+    let searchTerm = tagSearch.toLowerCase()
+    let searchArray = []
+    let exsitingTag = false
 
-  const studentList = filteredStudent.map((student, index) => {
-    return <DisplayStudents student={student}  key={`student-info-${index}`}/>
+    studentData.forEach(student => {
+      student.tag.forEach(tag => {
+        if(tag.toLowerCase().includes(searchTerm)) {
+          exsitingTag = true
+        }
+      })
+      if(!searchTerm || exsitingTag) {
+        searchArray.push(student)
+      }
+    })
+    return searchArray
+  }
+
+  const filteredStudent = getFilteredStudent()
+  const filteredTag = getFilteredStudentTag()
+  const studentNameAndTag = []
+
+  filteredStudent.forEach((student) => {
+    if(filteredTag.includes(student)) {
+      studentNameAndTag.push(student)
+    }
+  })
+
+  const studentList = studentNameAndTag.map((student, index) => {
+    return <DisplayStudents student={student} index={index} tag={tag} setTag={setTag} addTag={addTag} key={`student-info-${index}`}/>
   })
   
   return (
@@ -61,10 +100,22 @@ function App() {
             value={search}
             onChange={handleChange}
           />
-          {/* css for the student info card */}
+        </div>
+          
+        <div className='search-wrapper'>
+          <label htmlFor="student-search"></label>
+          <input
+            placeholder="Search by tag"
+            id="student-search"
+            type="text"
+            value={tagSearch}
+            onChange={handleTagChange}
+          />
+        </div>
+
+        {/* css for the student info card */}
         <div className="student-card-wrapper"> 
           {studentList}
-        </div>
         </div>
       </div>
     </div>

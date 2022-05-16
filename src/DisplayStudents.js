@@ -3,12 +3,24 @@ import "./App.css"
 import AverageScore from "./AverageScore"
 import GradeList from "./GradeList"
  
-export default function DisplayStudents({student}) {
+export default function DisplayStudents({student, index, addTag}) {
   const [ open, setOpen ] = useState(false)
+
+  const [ newTag, setNewTag ] = useState("")
 
   const handleOnClick = () => {
     setOpen(!open)
   }
+
+  const handleClick = (e) => {
+    e.stopPropagation()
+
+  }
+
+  const showTag = student.tag.map((tag, index) => {
+    return <p key={index} className="content tag-box">{tag}</p>
+  })
+
   return(
     <>
       <div> 
@@ -30,6 +42,30 @@ export default function DisplayStudents({student}) {
                     <AverageScore studentScores={student.grades} />
                     <div className="test-scores">
                       {open ? <GradeList grades={student.grades}/> : ""}
+                    </div>
+                    <div className="tag-wrapper">
+                      {showTag}
+                    </div>
+                    <div>
+                      <form 
+                        onSubmit={ e => {
+                        e.preventDefault()
+                        addTag(newTag, index)
+                        setNewTag("")
+                        }}
+                      >
+                        <input 
+                          id="tag"
+                          placeholder="Add a Tag"
+                          type="text"
+                          value={newTag}
+                          onClick={handleClick}
+                          onChange={e => {
+                            setNewTag(e.target.value)
+                          }}
+                        />
+                        <input className="hide-btn" type="submit" onClick={handleClick} />
+                      </form>
                     </div>
                   </div>
                 </div>
