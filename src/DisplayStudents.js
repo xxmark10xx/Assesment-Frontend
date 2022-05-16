@@ -4,17 +4,18 @@ import AverageScore from "./AverageScore"
 import GradeList from "./GradeList"
  
 export default function DisplayStudents({student, index, addTag}) {
+  //  setting state so we could show student grades
   const [ open, setOpen ] = useState(false)
-
+  // setting state to add a new tag to the student
   const [ newTag, setNewTag ] = useState("")
 
-  const handleOnClick = () => {
+  // onClick to open student grades
+  function handleOnClick() {
     setOpen(!open)
   }
 
   const handleClick = (e) => {
     e.stopPropagation()
-
   }
 
   const showTag = student.tag.map((tag, index) => {
@@ -41,9 +42,10 @@ export default function DisplayStudents({student, index, addTag}) {
                     <p className='content'>Skill: {student.skill}</p>
                     <AverageScore studentScores={student.grades} />
                     <div className="test-scores">
+                      {/* ternery structure to open grades */}
                       {open ? <GradeList grades={student.grades}/> : ""}
                     </div>
-                    <div className="tag-wrapper">
+                    <div className="tag-container">
                       {showTag}
                     </div>
                     <div>
@@ -71,8 +73,9 @@ export default function DisplayStudents({student, index, addTag}) {
                 </div>
               </div>
               <div>
-                <div className="open-wrapper">
+                <div className="open-container">
                   <div className="line-horizontal"></div>
+                  {/* ternery structure to show minus and plus sign */}
                   {open ? <div className="line-vertical" style={{visibility: 'hidden'}}></div>  : <div className="line-vertical"></div>}
                 </div>
               </div>
